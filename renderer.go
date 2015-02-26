@@ -18,3 +18,9 @@ type HTTP struct {
 	WarnWords map[string][]string `json:"warn_words"`
 	BadLines  map[string][]string `json:"bad_lines"`
 }
+
+type FTP struct {
+	GoodWords map[string]string   `json:"good_words"`
+	WarnWords map[string][]string `json:"warn_words"`
+	BadLines  map[string][]string `json:"bad_lines"`
+}
