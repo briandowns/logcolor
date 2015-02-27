@@ -32,6 +32,7 @@ type HTTP struct {
 
 type FTP struct {
 	GoodWords []string `json:"good_words"`
+	GoodLines []string `json:"good_lines"`
 	WarnWords []string `json:"warn_words"`
 	BadLines  []string `json:"bad_lines"`
 }
