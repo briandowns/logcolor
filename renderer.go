@@ -13,6 +13,7 @@
 package renderer
 
 import (
+	"reflect"
 	"strings"
 )
 
@@ -71,4 +72,8 @@ func (h *HTTP) ExistsInBadLines() bool {
 		}
 	}
 	return false
+}
+
+func FieldCount(i interface{}) int {
+	return reflect.TypeOf(i).NumField()
 }
