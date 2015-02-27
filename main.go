@@ -16,6 +16,7 @@ import (
 	"bufio"
 	"flag"
 	"os"
+	"strings"
 
 	"github.com/fatih/color"
 )
@@ -27,8 +28,9 @@ func colorize() {
 	for {
 		select {
 		case t := <-textChan:
-			for _, i := range t {
-				color.Red(string(i))
+			brokenLine := strings.Split(t, " ")
+			for i, s := range brokenLine {
+				brokenLine[i] = color.Red(s)
 			}
 		}
 	}
