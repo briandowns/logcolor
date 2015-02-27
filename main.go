@@ -24,6 +24,7 @@ import (
 var textChan = make(chan string)
 var signalChan = make(chan os.Signal, 1) // channel to catch ctrl-c
 
+// TODO: replace code below with strings.Contains() and strings.Replace()
 func colorize() {
 	for {
 		select {
@@ -33,6 +34,7 @@ func colorize() {
 				brokenLine[i] = color.Red(s)
 			}
 		}
+		strings.Join(brokenLine, " ")
 	}
 }
 
