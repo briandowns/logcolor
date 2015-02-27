@@ -12,15 +12,62 @@
 
 package renderer
 
+import (
+	"strings"
+)
+
+type Log interface {
+	ExistsInGoodWords() bool
+	ExistsInWarnWords() bool
+	ExistsInGoodLines() bool
+	ExistsInBadLines() bool
+}
+
 type HTTP struct {
-	GoodWords map[string][]string `json:"good_words"`
-	GoodLines map[string][]string `json:"good_lines"`
-	WarnWords map[string][]string `json:"warn_words"`
-	BadLines  map[string][]string `json:"bad_lines"`
+	GoodWords []string `json:"good_words"`
+	GoodLines []string `json:"good_lines"`
+	WarnWords []string `json:"warn_words"`
+	BadLines  []string `json:"bad_lines"`
 }
 
 type FTP struct {
-	GoodWords map[string]string   `json:"good_words"`
-	WarnWords map[string][]string `json:"warn_words"`
-	BadLines  map[string][]string `json:"bad_lines"`
+	GoodWords []string `json:"good_words"`
+	WarnWords []string `json:"warn_words"`
+	BadLines  []string `json:"bad_lines"`
+}
+
+func (h *HTTP) ExistsInGoodWords(word string) bool {
+	for _, i := range h.GoodWords {
+		if strings.Contains(word, i) {
+			return true
+		}
+	}
+	return false
+}
+
+func (h *HTTP) ExistsInWarnWords(word string) bool {
+	for _, i := range h.WarnWords {
+		if strings.Contains(word, i) {
+			return true
+		}
+	}
+	return false
+}
+
+func (h *HTTP) ExistsInGoodWords() bool {
+	for _, i := range h.GoodWords {
+		if strings.Contains(word, i) {
+			return true
+		}
+	}
+	return false
+}
+
+func (h *HTTP) ExistsInBadLines() bool {
+	for _, i := range h.BadLines {
+		if strings.Contains(word, i) {
+			return true
+		}
+	}
+	return false
 }
