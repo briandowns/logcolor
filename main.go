@@ -47,7 +47,11 @@ func main() {
 	go colorize()
 	for {
 		reader := bufio.NewReader(os.Stdin)
-		text, _ := reader.ReadString('\n')
+		text, err := reader.ReadString('\n')
+		if err != nil {
+			fmt.Println("unable to read line")
+			os.Exit(1)
+		}
 		textChan <- text
 	}
 	os.Exit(0)
