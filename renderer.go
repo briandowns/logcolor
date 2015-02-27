@@ -17,10 +17,10 @@ import (
 )
 
 type Log interface {
-	ExistsInGoodWords() bool
-	ExistsInWarnWords() bool
-	ExistsInGoodLines() bool
-	ExistsInBadLines() bool
+	ExistsInGoodWords(word string) bool
+	ExistsInWarnWords(word string) bool
+	ExistsInGoodLines(word string) bool
+	ExistsInBadLines(word string) bool
 }
 
 type HTTP struct {
