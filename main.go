@@ -34,7 +34,6 @@ func colorize() {
 				brokenLine[i] = color.Red(s)
 			}
 		}
-		strings.Join(brokenLine, " ")
 	}
 }
 
