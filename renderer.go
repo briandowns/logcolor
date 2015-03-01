@@ -74,6 +74,7 @@ func (h *HTTP) ExistsInBadLines() bool {
 	return false
 }
 
+// FieldCount will return the number of fields on a given struct
 func FieldCount(i interface{}) int {
 	return reflect.TypeOf(i).NumField()
 }
