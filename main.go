@@ -21,7 +21,7 @@ import (
 	"github.com/fatih/color"
 )
 
-var textChan = make(chan string)
+var textChan = make(chan string)         // channel to pass log lines for processing
 var signalChan = make(chan os.Signal, 1) // channel to catch ctrl-c
 
 // TODO: replace code below with strings.Contains() and strings.Replace()
