@@ -1,0 +1,8 @@
+Do we do individual modules for these or keep them all together?
+
+- nova
+- neutron
+- cinder
+- swift
+- keystone
+
