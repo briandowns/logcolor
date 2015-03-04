@@ -22,7 +22,10 @@ import (
 )
 
 var textChan = make(chan string)         // channel to pass log lines for processing
+var formattedChan = make(chan string)    // channel to pass formatted text back
 var signalChan = make(chan os.Signal, 1) // channel to catch ctrl-c
+
+var template map[string][]string
 
 // TODO: replace code below with strings.Contains() and strings.Replace()
 func colorize() {
@@ -31,7 +34,11 @@ func colorize() {
 		case t := <-textChan:
 			brokenLine := strings.Split(t, " ")
 			for i, s := range brokenLine {
-				brokenLine[i] = color.Red(s)
+				for i := range template {
+					if strings.Contains(i, "") {
+						strings.Replace(i, "")
+					}
+				}
 			}
 		}
 	}
