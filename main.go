@@ -19,7 +19,6 @@ import (
 	"strings"
 
 	"github.com/briandowns/logcolor/renderers"
-	"github.com/fatih/color"
 )
 
 var textChan = make(chan string)         // channel to pass log lines for processing
@@ -27,7 +26,7 @@ var formattedChan = make(chan string)    // channel to pass formatted text back
 var signalChan = make(chan os.Signal, 1) // channel to catch ctrl-c
 
 // TODO: replace code below with strings.Contains() and strings.Replace()
-func colorize() {
+func process() {
 	for {
 		select {
 		case t := <-textChan:
@@ -35,11 +34,15 @@ func colorize() {
 			for i, s := range brokenLine {
 				select {
 				case render.ExistsInBadLines(s):
-					formattedChan <- s
+					var formatted string
+					brokenLine[i] = renderers.ColorBad(s)
+					formattedChan <- stirngs.Join(brokenLine, " ")
 				case render.ExistsInWarnWords(s):
-					formattedChan <- s
+					brokenLine[i] = renderers.ColorBad(s)
+					formattedChan <- stirngs.Join(brokenLine, " ")
 				case render.ExistsInGoodWords(s):
-					formattedChan <- s
+					brokenLine[i] = renderers.ColorBad(s)
+					formattedChan <- stirngs.Join(brokenLine, " ")
 				default:
 					formattedChan <- s
 				}
@@ -56,7 +59,7 @@ func main() {
 			os.Exit(1)
 		}
 	}()
-	go colorize()
+	go process()
 	for {
 		reader := bufio.NewReader(os.Stdin)
 		text, err := reader.ReadString('\n')
