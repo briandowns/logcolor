@@ -56,16 +56,7 @@ func (h *HTTP) ExistsInWarnWords(word string) bool {
 	return false
 }
 
-func (h *HTTP) ExistsInGoodWords() bool {
-	for _, i := range h.GoodWords {
-		if strings.Contains(word, i) {
-			return true
-		}
-	}
-	return false
-}
-
-func (h *HTTP) ExistsInBadLines() bool {
+func (h *HTTP) ExistsInBadLines(word string) bool {
 	for _, i := range h.BadLines {
 		if strings.Contains(word, i) {
 			return true
