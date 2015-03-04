@@ -18,14 +18,13 @@ import (
 	"os"
 	"strings"
 
+	render "./renderers" // TODO: fix this...
 	"github.com/fatih/color"
 )
 
 var textChan = make(chan string)         // channel to pass log lines for processing
 var formattedChan = make(chan string)    // channel to pass formatted text back
 var signalChan = make(chan os.Signal, 1) // channel to catch ctrl-c
-
-var template map[string][]string
 
 // TODO: replace code below with strings.Contains() and strings.Replace()
 func colorize() {
@@ -34,10 +33,15 @@ func colorize() {
 		case t := <-textChan:
 			brokenLine := strings.Split(t, " ")
 			for i, s := range brokenLine {
-				for i := range template {
-					if strings.Contains(i, "") {
-						strings.Replace(i, "")
-					}
+				select {
+				case render.ExistsInBadLines(s):
+					formattedChan <- s
+				case render.ExistsInWarnWords(s):
+					formattedChan <- s
+				case render.ExistsInGoodWords(s):
+					formattedChan <- s
+				default:
+					formattedChan <- s
 				}
 			}
 		}
