@@ -18,7 +18,7 @@ import (
 	"os"
 	"strings"
 
-	render "./renderers" // TODO: fix this...
+	"github.com/briandowns/logcolor/renderers"
 	"github.com/fatih/color"
 )
 
