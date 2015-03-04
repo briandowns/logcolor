@@ -17,13 +17,13 @@ import (
 )
 
 func ColorBad(s string) string {
-	return ""
+	return color.Red(s)
 }
 
 func ColorWarn(s string) string {
-	return ""
+	return color.BgBlack
 }
 
 func ColorGood(s string) string {
-	return ""
+	return color.Green(s)
 }
