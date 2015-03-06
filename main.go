@@ -56,6 +56,8 @@ var (
 	templateFlag = flag.String("t", "", "template to use for log parsing")
 )
 
+const USAGE = `Usage: logcolor -t template [-h]`
+
 func main() {
 	flag.Parse()
 
@@ -66,6 +68,12 @@ func main() {
 			os.Exit(1)
 		}
 	}()
+
+	if len(*templateFlag) != 1 {
+		fmt.Println(USAGE)
+		os.Exit(1)
+	}
+
 	go process()
 	for {
 		reader := bufio.NewReader(os.Stdin)
