@@ -33,14 +33,14 @@ func process() {
 			brokenLine := strings.Split(t, " ")
 			for i, s := range brokenLine {
 				select {
-				case render.ExistsInBadLines(s):
+				case renderers.HTTP.ExistsInBadLines(s):
 					var formatted string
 					brokenLine[i] = renderers.ColorBad(s)
 					formattedChan <- stirngs.Join(brokenLine, " ")
-				case render.ExistsInWarnWords(s):
+				case renderers.HTTP.ExistsInWarnWords(s):
 					brokenLine[i] = renderers.ColorBad(s)
 					formattedChan <- stirngs.Join(brokenLine, " ")
-				case render.ExistsInGoodWords(s):
+				case renderers.HTTP.ExistsInGoodWords(s):
 					brokenLine[i] = renderers.ColorBad(s)
 					formattedChan <- stirngs.Join(brokenLine, " ")
 				default:
@@ -51,7 +51,14 @@ func process() {
 	}
 }
 
+// Pointers to hold the contents of the flag args.
+var (
+	templateFlag = flag.String("t", "", "template to use for log parsing")
+)
+
 func main() {
+	flag.Parse()
+
 	signal.Notify(signalChan, os.Interrupt)
 	// setup go routine to catch a ctrl-c
 	go func() {
