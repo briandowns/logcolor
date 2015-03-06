@@ -28,21 +28,21 @@ var formattedChan = make(chan string)    // channel to pass formatted text back
 var signalChan = make(chan os.Signal, 1) // channel to catch ctrl-c
 
 // TODO: replace code below with strings.Contains() and strings.Replace()
-func process(template *string) {
+func process(log renderers.Log) {
 	for {
 		select {
 		case t := <-textChan:
 			brokenLine := strings.Split(t, " ")
 			for i, s := range brokenLine {
 				switch {
-				case renderers.HTTP.ExistsInBadLines(s):
+				case log.ExistsInBadLines(s):
 					var formatted string
 					brokenLine[i] = renderers.ColorBad(s)
 					formattedChan <- strings.Join(brokenLine, " ")
-				case renderers.HTTP.ExistsInWarnWords(s):
+				case log.ExistsInWarnWords(s):
 					brokenLine[i] = renderers.ColorBad(s)
 					formattedChan <- strings.Join(brokenLine, " ")
-				case renderers.HTTP.ExistsInGoodWords(s):
+				case log.ExistsInGoodWords(s):
 					brokenLine[i] = renderers.ColorBad(s)
 					formattedChan <- strings.Join(brokenLine, " ")
 				default:
@@ -81,9 +81,11 @@ func main() {
 	case *templateFlag == "HTTP":
 		h := &renderers.HTTP{}
 		log = renderers.Log(h)
+	case *templateFlag == "FTP":
+		f := &renderers.FTP{}
 	}
 
-	go process(*templateFlag)
+	go process()
 	for {
 		reader := bufio.NewReader(os.Stdin)
 		text, err := reader.ReadString('\n')

@@ -47,7 +47,10 @@ func (h *HTTP) ExistsInGoodWords(word string) bool {
 	return false
 }
 
-func (h *HTTP) ExistsInGoodLines(word string) {}
+func (h *HTTP) ExistsInGoodLines(word string) bool {
+	// not implemented at the moment
+	return true
+}
 
 func (h *HTTP) ExistsInWarnWords(word string) bool {
 	for _, i := range h.WarnWords {
