@@ -15,7 +15,9 @@ package main
 import (
 	"bufio"
 	"flag"
+	"fmt"
 	"os"
+	"os/signal"
 	"strings"
 
 	"github.com/briandowns/logcolor/renderers"
@@ -26,23 +28,23 @@ var formattedChan = make(chan string)    // channel to pass formatted text back
 var signalChan = make(chan os.Signal, 1) // channel to catch ctrl-c
 
 // TODO: replace code below with strings.Contains() and strings.Replace()
-func process() {
+func process(template *string) {
 	for {
 		select {
 		case t := <-textChan:
 			brokenLine := strings.Split(t, " ")
 			for i, s := range brokenLine {
-				select {
+				switch {
 				case renderers.HTTP.ExistsInBadLines(s):
 					var formatted string
 					brokenLine[i] = renderers.ColorBad(s)
-					formattedChan <- stirngs.Join(brokenLine, " ")
+					formattedChan <- strings.Join(brokenLine, " ")
 				case renderers.HTTP.ExistsInWarnWords(s):
 					brokenLine[i] = renderers.ColorBad(s)
-					formattedChan <- stirngs.Join(brokenLine, " ")
+					formattedChan <- strings.Join(brokenLine, " ")
 				case renderers.HTTP.ExistsInGoodWords(s):
 					brokenLine[i] = renderers.ColorBad(s)
-					formattedChan <- stirngs.Join(brokenLine, " ")
+					formattedChan <- strings.Join(brokenLine, " ")
 				default:
 					formattedChan <- s
 				}
@@ -74,7 +76,14 @@ func main() {
 		os.Exit(1)
 	}
 
-	go process()
+	var log renderers.Log
+	switch {
+	case *templateFlag == "HTTP":
+		h := &renderers.HTTP{}
+		log = renderers.Log(h)
+	}
+
+	go process(*templateFlag)
 	for {
 		reader := bufio.NewReader(os.Stdin)
 		text, err := reader.ReadString('\n')
