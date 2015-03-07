@@ -77,15 +77,31 @@ func main() {
 	}
 
 	var log renderers.Log
-	switch {
-	case *templateFlag == "HTTP":
+	switch *templateFlag {
+	case "http":
 		h := &renderers.HTTP{}
 		log = renderers.Log(h)
-	case *templateFlag == "FTP":
+	case "ftp":
 		f := &renderers.FTP{}
+		log = renderers.Log(f)
+	case "sip":
+		s := &renderers.SIP{}
+		log = renderers.Log(s)
+	case "mysql":
+		m := &renderers.MySQL{}
+		log = renderers.Log(m)
+	case "rsync":
+		r := &renderers.Rsync{}
+		log = renderers.Log(r)
+	case "postgresql":
+		p := &renderers.Postgresql{}
+		log = renderers.Log(p)
+	case "openstack":
+		o := &renderers.Openstack{}
+		log = renderers.Log(o)
 	}
 
-	go process()
+	go process(log)
 	for {
 		reader := bufio.NewReader(os.Stdin)
 		text, err := reader.ReadString('\n')
