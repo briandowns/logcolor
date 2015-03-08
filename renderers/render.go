@@ -14,6 +14,7 @@ package renderers
 
 import (
 	"reflect"
+	"strings"
 )
 
 type Log interface {
@@ -30,8 +31,8 @@ type Match struct {
 	BadLines  []string `json:"bad_lines"`
 }
 
-func ExistsInGoodWords(word string) bool {
-	for _, i := range h.Match.GoodWords {
+func ExistsInGoodWords(word string, words []string) bool {
+	for _, i := range words {
 		if strings.Contains(word, i) {
 			return true
 		}
@@ -39,13 +40,13 @@ func ExistsInGoodWords(word string) bool {
 	return false
 }
 
-func ExistsInGoodLines(word string) bool {
+func ExistsInGoodLines(word string, words []string) bool {
 	// not implemented at the moment
 	return true
 }
 
-func ExistsInWarnWords(word string) bool {
-	for _, i := range h.Match.WarnWords {
+func ExistsInWarnWords(word string, words []string) bool {
+	for _, i := range words {
 		if strings.Contains(word, i) {
 			return true
 		}
@@ -53,8 +54,8 @@ func ExistsInWarnWords(word string) bool {
 	return false
 }
 
-func ExistsInBadLines(word string) bool {
-	for _, i := range h.Match.BadLines {
+func ExistsInBadLines(word string, words []string) bool {
+	for _, i := range words {
 		if strings.Contains(word, i) {
 			return true
 		}
