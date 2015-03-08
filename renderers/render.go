@@ -14,7 +14,6 @@ package renderers
 
 import (
 	"reflect"
-	"strings"
 )
 
 type Log interface {
@@ -24,22 +23,15 @@ type Log interface {
 	ExistsInBadLines(word string) bool
 }
 
-type HTTP struct {
+type Match struct {
 	GoodWords []string `json:"good_words"`
 	GoodLines []string `json:"good_lines"`
 	WarnWords []string `json:"warn_words"`
 	BadLines  []string `json:"bad_lines"`
 }
 
-type FTP struct {
-	GoodWords []string `json:"good_words"`
-	GoodLines []string `json:"good_lines"`
-	WarnWords []string `json:"warn_words"`
-	BadLines  []string `json:"bad_lines"`
-}
-
-func (h *HTTP) ExistsInGoodWords(word string) bool {
-	for _, i := range h.GoodWords {
+func ExistsInGoodWords(word string) bool {
+	for _, i := range h.Match.GoodWords {
 		if strings.Contains(word, i) {
 			return true
 		}
@@ -47,13 +39,13 @@ func (h *HTTP) ExistsInGoodWords(word string) bool {
 	return false
 }
 
-func (h *HTTP) ExistsInGoodLines(word string) bool {
+func ExistsInGoodLines(word string) bool {
 	// not implemented at the moment
 	return true
 }
 
-func (h *HTTP) ExistsInWarnWords(word string) bool {
-	for _, i := range h.WarnWords {
+func ExistsInWarnWords(word string) bool {
+	for _, i := range h.Match.WarnWords {
 		if strings.Contains(word, i) {
 			return true
 		}
@@ -61,8 +53,8 @@ func (h *HTTP) ExistsInWarnWords(word string) bool {
 	return false
 }
 
-func (h *HTTP) ExistsInBadLines(word string) bool {
-	for _, i := range h.BadLines {
+func ExistsInBadLines(word string) bool {
+	for _, i := range h.Match.BadLines {
 		if strings.Contains(word, i) {
 			return true
 		}
