@@ -17,11 +17,14 @@ import (
 	"strings"
 )
 
-type Log interface {
-	ExistsInGoodWords(word string) bool
-	ExistsInWarnWords(word string) bool
-	ExistsInGoodLines(word string) bool
-	ExistsInBadLines(word string) bool
+type HTTP struct {
+	ID    int   `json:"id"`
+	Match Match `json:"match"`
+}
+
+type FTP struct {
+	ID    int   `json:"id"`
+	Match Match `json:"match"`
 }
 
 type Match struct {
