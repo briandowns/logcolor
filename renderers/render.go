@@ -34,30 +34,7 @@ type Match struct {
 	BadLines  []string `json:"bad_lines"`
 }
 
-func ExistsInGoodWords(word string, words []string) bool {
-	for _, i := range words {
-		if strings.Contains(word, i) {
-			return true
-		}
-	}
-	return false
-}
-
-func ExistsInGoodLines(word string, words []string) bool {
-	// not implemented at the moment
-	return true
-}
-
-func ExistsInWarnWords(word string, words []string) bool {
-	for _, i := range words {
-		if strings.Contains(word, i) {
-			return true
-		}
-	}
-	return false
-}
-
-func ExistsInBadLines(word string, words []string) bool {
+func WordExists(word string, words []string) bool {
 	for _, i := range words {
 		if strings.Contains(word, i) {
 			return true
