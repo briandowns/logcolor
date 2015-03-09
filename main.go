@@ -26,9 +26,10 @@ import (
 var textChan = make(chan string)         // channel to pass log lines for processing
 var formattedChan = make(chan string)    // channel to pass formatted text back
 var signalChan = make(chan os.Signal, 1) // channel to catch ctrl-c
+var stopChan = make(chan struct{})       // channel to kill the process thread
 
 // TODO: replace code below with strings.Contains() and strings.Replace()
-func process(log renderers.Log) {
+func processLine(log renderers.Log) {
 	for {
 		select {
 		case t := <-textChan:
@@ -49,6 +50,8 @@ func process(log renderers.Log) {
 					formattedChan <- s
 				}
 			}
+		case <-stopChan:
+			return
 		}
 	}
 }
@@ -67,6 +70,7 @@ func main() {
 	// setup go routine to catch a ctrl-c
 	go func() {
 		for range signalChan {
+			stopChan <- struct{}{} // clean up
 			os.Exit(1)
 		}
 	}()
@@ -101,7 +105,8 @@ func main() {
 		log = renderers.Log(o)
 	}
 
-	go process(log)
+	go processLine(log)
+
 	for {
 		reader := bufio.NewReader(os.Stdin)
 		text, err := reader.ReadString('\n')
