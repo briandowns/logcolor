@@ -27,22 +27,18 @@ var signalChan = make(chan os.Signal, 1) // channel to catch ctrl-c
 var stopChan = make(chan struct{})       // channel to kill the process thread
 
 // TODO: replace code below with strings.Contains() and strings.Replace()
-func processLine(log renderers.Log) {
+func processLine() {
 	for {
 		select {
 		case t := <-textChan:
 			brokenLine := strings.Split(t, " ")
 			for i, s := range brokenLine {
 				switch {
-				case log.ExistsInBadLines(s):
-					var formatted string
-					brokenLine[i] = renderers.ColorBad(s)
+				case WordExists():
 					formattedChan <- strings.Join(brokenLine, " ")
-				case log.ExistsInWarnWords(s):
-					brokenLine[i] = renderers.ColorBad(s)
+				case WordExists():
 					formattedChan <- strings.Join(brokenLine, " ")
-				case log.ExistsInGoodWords(s):
-					brokenLine[i] = renderers.ColorBad(s)
+				case WordExists():
 					formattedChan <- strings.Join(brokenLine, " ")
 				default:
 					formattedChan <- s
@@ -81,38 +77,42 @@ func main() {
 	var log renderers.Log
 	switch *templateFlag {
 	case "http":
-		h := &renderers.HTTP{}
-		log = renderers.Log(h)
+		h := &HTTP{}
 	case "ftp":
-		f := &renderers.FTP{}
-		log = renderers.Log(f)
-	case "sip":
-		s := &renderers.SIP{}
-		log = renderers.Log(s)
-	case "mysql":
-		m := &renderers.MySQL{}
-		log = renderers.Log(m)
-	case "rsync":
-		r := &renderers.Rsync{}
-		log = renderers.Log(r)
-	case "postgresql":
-		p := &renderers.Postgresql{}
-		log = renderers.Log(p)
-	case "openstack":
-		o := &renderers.Openstack{}
-		log = renderers.Log(o)
+		f := &FTP{}
+		/*
+			case "sip":
+				s := &SIP{}
+			case "mysql":
+				m := &MySQL{}
+			case "rsync":
+				r := &Rsync{}
+			case "postgresql":
+				p := &Postgresql{}
+			case "openstack":
+				o := &Openstack{}
+		*/
 	}
 
 	go processLine(log)
 
-	for {
-		reader := bufio.NewReader(os.Stdin)
-		text, err := reader.ReadString('\n')
-		if err != nil {
-			fmt.Println("unable to read line")
-			os.Exit(1)
+	go func() {
+		for {
+			reader := bufio.NewReader(os.Stdin)
+			text, err := reader.ReadString('\n')
+			if err != nil {
+				fmt.Println("unable to read line")
+				os.Exit(1)
+			}
+			textChan <- text
 		}
-		textChan <- text
+	}()
+
+	for {
+		select {
+		case f := <-forformattedChan:
+			fmt.Println(f)
+		}
 	}
 	os.Exit(0)
 }
