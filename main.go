@@ -19,8 +19,6 @@ import (
 	"os"
 	"os/signal"
 	"strings"
-
-	"github.com/briandowns/logcolor/renderers"
 )
 
 var textChan = make(chan string)         // channel to pass log lines for processing
