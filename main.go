@@ -32,13 +32,13 @@ func processLine() {
 		select {
 		case t := <-textChan:
 			brokenLine := strings.Split(t, " ")
-			for i, s := range brokenLine {
+			for _, s := range brokenLine {
 				switch {
-				case WordExists():
+				case WordExists(s, []string{"asdf"}):
 					formattedChan <- strings.Join(brokenLine, " ")
-				case WordExists():
+				case WordExists(s, []string{"asdf"}):
 					formattedChan <- strings.Join(brokenLine, " ")
-				case WordExists():
+				case WordExists(s, []string{"asdf"}):
 					formattedChan <- strings.Join(brokenLine, " ")
 				default:
 					formattedChan <- s
@@ -69,17 +69,18 @@ func main() {
 		}
 	}()
 
-	if len(*templateFlag) != 1 {
-		fmt.Println(USAGE)
-		os.Exit(1)
-	}
+	/*
+		if len(*templateFlag) != 1 {
+			fmt.Println(USAGE)
+			os.Exit(1)
+		}
+	*/
 
-	var log renderers.Log
 	switch *templateFlag {
 	case "http":
-		h := &HTTP{}
+		//h := &HTTP{}
 	case "ftp":
-		f := &FTP{}
+		//f := &FTP{}
 		/*
 			case "sip":
 				s := &SIP{}
@@ -94,7 +95,7 @@ func main() {
 		*/
 	}
 
-	go processLine(log)
+	go processLine()
 
 	go func() {
 		for {
@@ -110,8 +111,10 @@ func main() {
 
 	for {
 		select {
-		case f := <-forformattedChan:
+		case f := <-formattedChan:
 			fmt.Println(f)
+		default:
+			continue
 		}
 	}
 	os.Exit(0)
