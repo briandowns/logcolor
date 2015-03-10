@@ -26,19 +26,22 @@ var formattedChan = make(chan string)    // channel to pass formatted text back
 var signalChan = make(chan os.Signal, 1) // channel to catch ctrl-c
 var stopChan = make(chan struct{})       // channel to kill the process thread
 
-// TODO: replace code below with strings.Contains() and strings.Replace()
-func processLine() {
+type logger interface{}
+
+func processLine(log logger) {
 	for {
 		select {
 		case t := <-textChan:
 			brokenLine := strings.Split(t, " ")
 			for _, s := range brokenLine {
 				switch {
-				case WordExists(s, []string{"asdf"}):
+				case WordExists(s, log.Match.GoodWords):
 					formattedChan <- strings.Join(brokenLine, " ")
-				case WordExists(s, []string{"asdf"}):
+				case WordExists(s, log.Match.GoodLines):
 					formattedChan <- strings.Join(brokenLine, " ")
-				case WordExists(s, []string{"asdf"}):
+				case WordExists(s, log.Match.WarnWords):
+					formattedChan <- strings.Join(brokenLine, " ")
+				case WordExists(s, log.Match.BadWords):
 					formattedChan <- strings.Join(brokenLine, " ")
 				default:
 					formattedChan <- s
@@ -76,9 +79,10 @@ func main() {
 		}
 	*/
 
+	var log interface{}
 	switch *templateFlag {
 	case "http":
-		//h := &HTTP{}
+		log := logger(&HTTP{})
 	case "ftp":
 		//f := &FTP{}
 		/*
@@ -95,7 +99,7 @@ func main() {
 		*/
 	}
 
-	go processLine()
+	go processLine(log)
 
 	go func() {
 		for {
