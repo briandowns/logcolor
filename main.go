@@ -52,7 +52,7 @@ func processLine(log logger) {
 				case WordExists(s, log.BadLines()):
 					formattedChan <- strings.Join(brokenLine, " ")
 				default:
-					formattedChan <- s
+					formattedChan <- s + "\n"
 				}
 			}
 		case <-stopChan:
@@ -109,11 +109,13 @@ func main() {
 	go func() {
 		for {
 			reader := bufio.NewReader(os.Stdin)
-			text, err := reader.ReadString('\n')
-			if err != nil {
-				fmt.Println("unable to read line")
-				os.Exit(1)
-			}
+			text, _ := reader.ReadString('\n')
+			/*
+				if err != nil {
+					fmt.Println("unable to read line")
+					os.Exit(1)
+				}
+			*/
 			textChan <- text
 		}
 	}()
