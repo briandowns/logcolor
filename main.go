@@ -16,6 +16,7 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"os/signal"
 	"strings"
@@ -109,13 +110,10 @@ func main() {
 	go func() {
 		for {
 			reader := bufio.NewReader(os.Stdin)
-			text, _ := reader.ReadString('\n')
-			/*
-				if err != nil {
-					fmt.Println("unable to read line")
-					os.Exit(1)
-				}
-			*/
+			text, err := reader.ReadString('\n')
+			if err == io.EOF {
+				os.Exit(1)
+			}
 			textChan <- text
 		}
 	}()
