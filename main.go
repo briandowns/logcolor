@@ -26,7 +26,12 @@ var formattedChan = make(chan string)    // channel to pass formatted text back
 var signalChan = make(chan os.Signal, 1) // channel to catch ctrl-c
 var stopChan = make(chan struct{})       // channel to kill the process thread
 
-type logger interface{}
+type logger interface {
+	GoodWords() []string
+	GoodLines() []string
+	WarnWords() []string
+	BadLines() []string
+}
 
 func processLine(log logger) {
 	for {

@@ -22,6 +22,22 @@ type HTTP struct {
 	Match Match `json:"match"`
 }
 
+func (h *HTTP) GoodWords() []string {
+	return h.Match.GoodWords
+}
+
+func (h *HTTP) GoodLines() []string {
+	return h.Match.GoodLines
+}
+
+func (h *HTTP) WarnWords() []string {
+	return h.Match.WarnWords
+}
+
+func (h *HTTP) BadLines() []string {
+	return h.Match.BadLines
+}
+
 type FTP struct {
 	ID    int   `json:"id"`
 	Match Match `json:"match"`
