@@ -40,13 +40,13 @@ func processLine(log logger) {
 			brokenLine := strings.Split(t, " ")
 			for _, s := range brokenLine {
 				switch {
-				case WordExists(s, log.Match.GoodWords):
+				case WordExists(s, log.GoodWords()):
 					formattedChan <- strings.Join(brokenLine, " ")
-				case WordExists(s, log.Match.GoodLines):
+				case WordExists(s, log.GoodLines()):
 					formattedChan <- strings.Join(brokenLine, " ")
-				case WordExists(s, log.Match.WarnWords):
+				case WordExists(s, log.WarnWords()):
 					formattedChan <- strings.Join(brokenLine, " ")
-				case WordExists(s, log.Match.BadWords):
+				case WordExists(s, log.BadLines()):
 					formattedChan <- strings.Join(brokenLine, " ")
 				default:
 					formattedChan <- s
@@ -84,10 +84,9 @@ func main() {
 		}
 	*/
 
-	var log interface{}
 	switch *templateFlag {
 	case "http":
-		log := logger(&HTTP{})
+		go processLine(logger(&HTTP{}))
 	case "ftp":
 		//f := &FTP{}
 		/*
@@ -103,8 +102,6 @@ func main() {
 				o := &Openstack{}
 		*/
 	}
-
-	go processLine(log)
 
 	go func() {
 		for {
