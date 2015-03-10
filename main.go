@@ -31,11 +31,14 @@ func processLine(log logger) {
 	for {
 		select {
 		case t := <-textChan:
-			if len(t) == 0 {
+			if t == "" {
 				formattedChan <- t
 			}
 			brokenLine := strings.Split(t, " ")
 			for _, s := range brokenLine {
+				if len(s) == 0 {
+					continue
+				}
 				switch {
 				case WordExists(s, log.GoodWords()):
 					formattedChan <- strings.Join(brokenLine, " ")
@@ -46,7 +49,7 @@ func processLine(log logger) {
 				case WordExists(s, log.BadLines()):
 					formattedChan <- strings.Join(brokenLine, " ")
 				default:
-					formattedChan <- s + "\n"
+					formattedChan <- t
 				}
 			}
 		case <-stopChan:
@@ -103,11 +106,11 @@ func main() {
 	go func() {
 		for {
 			reader := bufio.NewReader(os.Stdin)
-			text, err := reader.ReadString('\n')
+			text, _, err := reader.ReadLine()
 			if err == io.EOF {
 				os.Exit(1)
 			}
-			textChan <- text
+			textChan <- string(text)
 		}
 	}()
 
