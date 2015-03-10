@@ -37,6 +37,9 @@ func processLine(log logger) {
 	for {
 		select {
 		case t := <-textChan:
+			if len(t) == 0 {
+				formattedChan <- t
+			}
 			brokenLine := strings.Split(t, " ")
 			for _, s := range brokenLine {
 				switch {
