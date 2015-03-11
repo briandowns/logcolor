@@ -13,6 +13,7 @@
 package main
 
 import (
+	"fmt"
 	"reflect"
 	"strings"
 )
@@ -60,9 +61,11 @@ type Match struct {
 func WordExists(word string, words []string) bool {
 	for _, i := range words {
 		if strings.Contains(word, i) {
+			fmt.Println(word)
 			return true
 		}
 	}
+	fmt.Println(word)
 	return false
 }
 

@@ -26,20 +26,27 @@ var signalChan = make(chan os.Signal, 1) // channel to catch ctrl-c
 
 func processLine(line string, log logger) string {
 	if len(line) == 0 {
+		fmt.Println("too short")
 		return line
 	}
 	brokenLine := strings.Split(line, " ")
+	fmt.Println("BROKEN", brokenLine)
 	for _, s := range brokenLine {
 		switch {
 		case WordExists(s, log.GoodWords()):
+			fmt.Println("GOOD")
 			return strings.Join(brokenLine, " ")
 		case WordExists(s, log.GoodLines()):
+			fmt.Println("GOOD LINE")
 			return strings.Join(brokenLine, " ")
 		case WordExists(s, log.WarnWords()):
+			fmt.Println("WARN")
 			return strings.Join(brokenLine, " ")
 		case WordExists(s, log.BadLines()):
-			return strings.Join(brokenLine, " ")
+			fmt.Println("Found BAD")
+			return strings.Join(brokenLine, "BAD ")
 		default:
+			fmt.Println("NOTHING")
 			return line
 		}
 	}
