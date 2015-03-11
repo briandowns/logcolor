@@ -24,13 +24,6 @@ import (
 
 var signalChan = make(chan os.Signal, 1) // channel to catch ctrl-c
 
-type logger interface {
-	GoodWords() []string
-	GoodLines() []string
-	WarnWords() []string
-	BadLines() []string
-}
-
 func processLine(line string, log logger) string {
 	if len(line) == 0 {
 		return line

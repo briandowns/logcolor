@@ -17,6 +17,13 @@ import (
 	"strings"
 )
 
+type logger interface {
+	GoodWords() []string
+	GoodLines() []string
+	WarnWords() []string
+	BadLines() []string
+}
+
 type HTTP struct {
 	ID    int   `json:"id"`
 	Match Match `json:"match"`
