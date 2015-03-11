@@ -13,10 +13,8 @@
 package main
 
 import (
-	"bufio"
 	"flag"
 	"fmt"
-	"io"
 	"os"
 	"os/signal"
 	"strings"
@@ -36,32 +34,26 @@ type logger interface {
 	BadLines() []string
 }
 
-func processLine(log logger) {
-	for {
-		select {
-		case t := <-textChan:
-			if len(t) == 0 {
-				formattedChan <- t
-			}
-			brokenLine := strings.Split(t, " ")
-			for _, s := range brokenLine {
-				switch {
-				case WordExists(s, log.GoodWords()):
-					formattedChan <- strings.Join(brokenLine, " ")
-				case WordExists(s, log.GoodLines()):
-					formattedChan <- strings.Join(brokenLine, " ")
-				case WordExists(s, log.WarnWords()):
-					formattedChan <- strings.Join(brokenLine, " ")
-				case WordExists(s, log.BadLines()):
-					formattedChan <- strings.Join(brokenLine, " ")
-				default:
-					formattedChan <- s + "\n"
-				}
-			}
-		case <-stopChan:
-			return
+func processLine(line string, log logger) string {
+	if len(line) == 0 {
+		return line
+	}
+	brokenLine := strings.Split(line, " ")
+	for _, s := range brokenLine {
+		switch {
+		case WordExists(s, log.GoodWords()):
+			return strings.Join(brokenLine, " ")
+		case WordExists(s, log.GoodLines()):
+			return strings.Join(brokenLine, " ")
+		case WordExists(s, log.WarnWords()):
+			return strings.Join(brokenLine, " ")
+		case WordExists(s, log.BadLines()):
+			return strings.Join(brokenLine, " ")
+		default:
+			return line
 		}
 	}
+	return ""
 }
 
 // Pointers to hold the contents of the flag args.
@@ -91,9 +83,10 @@ func main() {
 		}
 	*/
 
+	var log logger
 	switch *templateFlag {
 	case "http":
-		go processLine(logger(&HTTP{}))
+		log = logger(&HTTP{})
 	case "ftp":
 		//f := &FTP{}
 		/*
@@ -115,26 +108,7 @@ func main() {
 		os.Exit(1)
 	}
 	for line := range t.Lines {
-		fmt.Println(line.Text)
-	}
-	go func() {
-		for {
-			reader := bufio.NewReader(os.Stdin)
-			text, err := reader.ReadString('\n')
-			if err == io.EOF {
-				os.Exit(1)
-			}
-			textChan <- text
-		}
-	}()
-
-	for {
-		select {
-		case f := <-formattedChan:
-			fmt.Println(f)
-		default:
-			continue
-		}
+		fmt.Println(processLine(line.Text, log))
 	}
 	os.Exit(0)
 }
