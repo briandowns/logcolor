@@ -20,6 +20,8 @@ import (
 	"os"
 	"os/signal"
 	"strings"
+
+	"github.com/ActiveState/tail"
 )
 
 var textChan = make(chan string)         // channel to pass log lines for processing
@@ -65,9 +67,10 @@ func processLine(log logger) {
 // Pointers to hold the contents of the flag args.
 var (
 	templateFlag = flag.String("t", "", "template to use for log parsing")
+	logFileFlag  = flag.String("l", "", "log file to colorize")
 )
 
-const USAGE = `Usage: logcolor -t template [-h]`
+const USAGE = `Usage: logcolor -t template -l logfile [-h]`
 
 func main() {
 	flag.Parse()
@@ -107,6 +110,13 @@ func main() {
 		*/
 	}
 
+	t, err := tail.TailFile("tail_test.log", tail.Config{Follow: true})
+	if err != nil {
+		os.Exit(1)
+	}
+	for line := range t.Lines {
+		fmt.Println(line.Text)
+	}
 	go func() {
 		for {
 			reader := bufio.NewReader(os.Stdin)
