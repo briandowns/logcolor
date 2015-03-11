@@ -110,7 +110,7 @@ func main() {
 		*/
 	}
 
-	t, err := tail.TailFile("tail_test.log", tail.Config{Follow: true})
+	t, err := tail.TailFile(*logFileFlag, tail.Config{Follow: true})
 	if err != nil {
 		os.Exit(1)
 	}
