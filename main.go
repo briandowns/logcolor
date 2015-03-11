@@ -22,10 +22,7 @@ import (
 	"github.com/ActiveState/tail"
 )
 
-var textChan = make(chan string)         // channel to pass log lines for processing
-var formattedChan = make(chan string)    // channel to pass formatted text back
 var signalChan = make(chan os.Signal, 1) // channel to catch ctrl-c
-var stopChan = make(chan struct{})       // channel to kill the process thread
 
 type logger interface {
 	GoodWords() []string
@@ -71,7 +68,6 @@ func main() {
 	// setup go routine to catch a ctrl-c
 	go func() {
 		for range signalChan {
-			stopChan <- struct{}{} // clean up
 			os.Exit(1)
 		}
 	}()
