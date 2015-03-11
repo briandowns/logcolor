@@ -99,7 +99,7 @@ func main() {
 		*/
 	}
 
-	t, err := tail.TailFile(*logFileFlag, tail.Config{Follow: true, ReOpen: true})
+	t, err := tail.TailFile(*logFileFlag, tail.Config{Follow: true, ReOpen: true, MustExist: true})
 	if err != nil {
 		os.Exit(1)
 	}
