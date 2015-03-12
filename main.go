@@ -20,34 +20,30 @@ import (
 	"strings"
 
 	"github.com/ActiveState/tail"
+	"github.com/fatih/color"
 )
 
 var signalChan = make(chan os.Signal, 1) // channel to catch ctrl-c
 
 func processLine(line string, log logger) string {
 	if len(line) == 0 {
-		fmt.Println("too short")
 		return line
 	}
 	brokenLine := strings.Split(line, " ")
-	fmt.Println("BROKEN", brokenLine)
-	for _, s := range brokenLine {
+	for i, s := range brokenLine {
 		switch {
 		case WordExists(s, log.GoodWords()):
-			fmt.Println("GOOD")
+			brokenLine[i] = color.GreenString(s)
 			return strings.Join(brokenLine, " ")
 		case WordExists(s, log.GoodLines()):
-			fmt.Println("GOOD LINE")
 			return strings.Join(brokenLine, " ")
 		case WordExists(s, log.WarnWords()):
-			fmt.Println("WARN")
+			brokenLine[i] = color.YellowString(s)
 			return strings.Join(brokenLine, " ")
 		case WordExists(s, log.BadLines()):
-			fmt.Println("Found BAD")
-			return strings.Join(brokenLine, "BAD ")
+			return color.RedString(strings.Join(brokenLine, " "))
 		default:
-			fmt.Println("NOTHING")
-			return line
+			continue
 		}
 	}
 	return ""
