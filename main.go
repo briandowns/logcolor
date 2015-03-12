@@ -34,19 +34,16 @@ func processLine(line string, log logger) string {
 		switch {
 		case WordExists(s, log.GoodWords()):
 			brokenLine[i] = color.GreenString(s)
-			return strings.Join(brokenLine, " ")
-		case WordExists(s, log.GoodLines()):
-			return strings.Join(brokenLine, " ")
+		//case WordExists(s, log.GoodLines()):
 		case WordExists(s, log.WarnWords()):
 			brokenLine[i] = color.YellowString(s)
-			return strings.Join(brokenLine, " ")
 		case WordExists(s, log.BadLines()):
-			return color.RedString(strings.Join(brokenLine, " "))
+			color.Red(strings.Join(brokenLine, " "))
 		default:
 			continue
 		}
 	}
-	return ""
+	return strings.Join(brokenLine, " ")
 }
 
 // Pointers to hold the contents of the flag args.
