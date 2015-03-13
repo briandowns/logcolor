@@ -34,7 +34,8 @@ func processLine(line string, log logger) string {
 		switch {
 		case WordExists(s, log.GoodWords()):
 			brokenLine[i] = color.GreenString(s)
-		//case WordExists(s, log.GoodLines()):
+		case WordExists(s, log.GoodLines()):
+			brokenLine[i] = color.GreenString(s)
 		case WordExists(s, log.WarnWords()):
 			brokenLine[i] = color.YellowString(s)
 		case WordExists(s, log.BadLines()):
